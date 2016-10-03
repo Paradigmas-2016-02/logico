@@ -6,20 +6,20 @@
 % Initial database listed here %
 % Theses values are referent to the location the player start and the current options to choose %
 
-% location: | location name |
-% options_per_location | option name |location name |
+% location ( location name )
+% options_per_location ( location name, option name )
 
 current_location(living_room).
 
 % Living Room options
-options_per_location(flashlight, living_room).
-options_per_location(kitchen, living_room).
+options_per_location(living_room, flashlight).
+options_per_location(living_room, kitchen).
 
 % Kitchen Options
-options_per_location(living_room, kitchen).
-options_per_location(dinner_room, kitchen).
-options_per_location(knife, kitchen).
-options_per_location(key1, kitchen).
+options_per_location(kitchen, living_room).
+options_per_location(kitchen, dinner_room).
+options_per_location(kitchen, knife).
+options_per_location(kitchen, key1).
 
 locations(kitchen).
 locations(dinner_room).
@@ -30,11 +30,11 @@ objects(key1).
 objects(key2).
 objects(knife).
 
-start_play :- write('Welcome to <game_name>'), nl,
-   write('this is an alpha version, so its still not complete'), nl,
+start :- write('Welcome to <game_name>'), nl,
+   write("it's an alpha version, so it's still not complete"), nl, nl,
    play.
 
-play :- write('you currently are in the '),
+play :- write('You are currently in the '),
    current_location(Current_location),
    write(Current_location), nl,
    write('and you can: '), nl,
@@ -43,11 +43,11 @@ play :- write('you currently are in the '),
    handle_option(Choosen_option),
    play.
 
-print_options :- current_location(Current_location), options_per_location(Option, Current_location), locations(Option),
-   write('Go to => '), write(Option), nl, fail. % Como melhorar essa parte? %
+print_options :- current_location(Current_location), options_per_location(Current_location, Option), locations(Option),
+   tab(4), write('Go to => '), write(Option), nl, fail. % Como melhorar essa parte? %
 
-print_options :- current_location(Current_location), options_per_location(Option, Current_location), objects(Option),
-   write('Grab => '), write(Option), nl, fail.
+print_options :- current_location(Current_location), options_per_location(Current_location, Option), objects(Option),
+   tab(4), write('Grab => '), write(Option), nl, fail.
 
 print_options.
 
