@@ -9,7 +9,8 @@
 	- _Look_: Olhar dentro, atrás ou debaixo de determinados objetos
 	- _Move_: Mover determinados objetos (sofá, escrivaninha,...)
 	- _Bag_: Colocar itens dentro da mochila para uso posterior
-
+	- _Open_: Abrir objetos (geladeira, carta,...)
 - GUI
 	- Mostrar itens de dentro da _bag_ para o jogador
+
 
