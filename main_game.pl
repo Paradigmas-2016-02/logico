@@ -52,4 +52,5 @@ print_options :- current_location(Current_location), options_per_location(Curren
 print_options.
 
 handle_option(Choosen_option) :- locations(Choosen_option), !, retract(current_location(X)), assert(current_location(Choosen_option)).
-handle_option(Choosen_option) :- objects(Choosen_option), !, assert(bag(Choosen_option)).
+handle_option(Choosen_option) :- objects(Choosen_option), !, current_location(X), retract(options_per_location(X, Choosen_option)).
+% handle_option(Choosen_option) :- objects(Choosen_option), !, assert(bag(Choosen_option)).
