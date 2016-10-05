@@ -52,5 +52,14 @@ print_options :- current_location(Current_location), options_per_location(Curren
 print_options.
 
 handle_option(Choosen_option) :- locations(Choosen_option), !, retract(current_location(X)), assert(current_location(Choosen_option)).
-handle_option(Choosen_option) :- objects(Choosen_option), !, current_location(X), retract(options_per_location(X, Choosen_option)).
-% handle_option(Choosen_option) :- objects(Choosen_option), !, assert(bag(Choosen_option)).
+handle_option(Choosen_option) :- objects(Choosen_option), current_location(X), options_per_location(X, Choosen_option), !,
+   retract(options_per_location(X, Choosen_option)), print_object_taken_message(Choosen_option).
+
+% invalid option %
+
+handle_option(Choosen_option) :- nl, write(Choosen_option), write(' is not an option.'), nl, write('please choose a valid option on the menu'), nl,
+   write("To choose an option you must write the name after the '=>' symbol"), nl, nl, play.
+
+handle_option.
+
+print_object_taken_message(Object_taken) :- nl, write(' You now have: '), write(Object_taken), nl, nl.
