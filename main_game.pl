@@ -53,8 +53,17 @@ print_options :- tab(4), write('See itens on bag => bag').
 print_options.
 
 handle_option(Choosen_option) :- locations(Choosen_option), !, retract(current_location(X)), assert(current_location(Choosen_option)).
-handle_option(Choosen_option) :- objects(Choosen_option), !, current_location(X), retract(options_per_location(X, Choosen_option)), assert(bag(Choosen_option)).
+
+handle_option(Choosen_option) :- objects(Choosen_option), current_location(X), options_per_location(X, Choosen_option), !,
+   retract(options_per_location(X, Choosen_option)), assert(bag(Choosen_option)), print_object_taken_message(Choosen_option).
 handle_option(bag) :- print_bag.
+
+% if it's an invalid option %
+
+handle_option(Choosen_option) :- nl, write(Choosen_option), write(' is not an option.'), nl, write('please choose a valid option on the menu'), nl,
+   write("To choose an option you must write the name after the '=>' symbol"), nl, nl, play.
+
+print_object_taken_message(Object_taken) :- nl, write(' You now have: '), write(Object_taken), nl, nl.
 
 print_bag :- bag(X), !, nl, write('The currents items on your bag are: '), print_item_bag.
 print_bag :- not(bag(X)), print_empty_bag.
