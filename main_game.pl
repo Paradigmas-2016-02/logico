@@ -4,20 +4,33 @@
 :-dynamic locked_room/1.
 :-dynamic not_moved/2.
 :-dynamic closed/2.
+:-multifile user:message_property/2.
 
 :-op(500, xfx, opens).
 
-start :- write('Welcome to <game_name>'), nl,
-   write("it's an alpha version, so it's still not complete"), nl,
+% ansi_format([bold,fg(black)], 'black~w', [world]), nl,
+% ansi_format([bold,fg(red)], 'red~w', [world]), nl,
+% ansi_format([bold,fg(green)], 'green~w', [world]), nl,
+% ansi_format([bold,fg(yellow)], 'yellow~w', [world]), nl,
+% ansi_format([bold,fg(blue)], 'blue~w', [world]), nl,
+% ansi_format([bold,fg(magenta)], 'magenta~w', [world]), nl,
+% ansi_format([bold,fg(cyan)], 'cyan~w', [world]), nl,
+% ansi_format([bold,fg(white)], 'white~w', [world]), nl,
+
+start :- cls, write('Welcome to '), ansi_format([bold,fg(magenta)], 'No Wa~w', [y]), write(': The Game!'), nl,
+   ansi_format([bold,fg(red)], 'Escape if you ca~w', [n]), nl,
    consult(house),
    play.
 
-play :- nl, not(current_location(exit)), write('You are currently in the '),
+play :- nl, not(current_location(exit)),
+   print_bag, nl,
+   write('You are currently in the '),
    current_location(Current_location),
-   write(Current_location), nl,
-   write('and you can: '), nl,
+	 ansi_format([bold,fg(green)], '~w', [Current_location]), nl,
+	 write('and you can: '), nl,
    print_options, nl,
    read(Choosen_option),
+	 cls,
    handle_option(Choosen_option),
    play.
 
@@ -27,17 +40,16 @@ play :- current_location(exit), nl, write('You have exit the house!'), nl, write
    reset_game(Play_again).
 
 print_options :- current_location(Current_location), options_per_location(Current_location, Option), locations(Option),
-   tab(4), write('Go to => '), write(Option), nl, fail. % Como melhorar essa parte? %
+   tab(4), write('Go to => '), ansi_format([bold,fg(yellow)], '~w', [Option]), nl, fail.
 
 print_options :- current_location(Current_location), options_per_location(Current_location, Option), objects(Option),
-   tab(4), write('Grab => '), write(Option), nl, fail.
+   tab(4), write('Grab => '), ansi_format([bold,fg(blue)], '~w', [Option]), nl, fail.
 
 print_options :- current_location(Current_location), options_per_location(Current_location, Option), movable(Option),
-   tab(4), write('Move => '), write(Option), nl, fail.
+   tab(4), write('Move => '), ansi_format([bold,fg(cyan)], '~w', [Option]), nl, fail.
 
 print_options :- current_location(Current_location), options_per_location(Current_location, Option), openable(Option),
-   tab(4), write('Open => '), write(Option), nl, fail.
-print_options :- tab(4), write('See itens on bag => bag').
+   tab(4), write('Open => '), ansi_format([bold,fg(magenta)], '~w', [Option]), nl, fail.
 
 print_options.
 
@@ -45,16 +57,16 @@ handle_option(Choosen_option) :- locations(Choosen_option), not(locked_room(Choo
    retract(current_location(X)), assert(current_location(Choosen_option)).
 
 handle_option(Choosen_option) :- locations(Choosen_option), locked_room(Choosen_option), have_key(Choosen_option), !,
-   nl, write('You opened the door to '), write(Choosen_option), write('!'), nl, handle_option(Choosen_option).
+   nl, ansi_format([bold,fg(red)], 'You opened the door to ~w', [Choosen_option]), write('!'), nl, handle_option(Choosen_option).
 
-handle_option(Choosen_option) :- movable(Choosen_option), current_location(Current_location), not_moved(Choosen_option, Y),
+handle_option(Choosen_option) :- movable(Choosen_option), current_location(Current_location), not_moved(Choosen_option, Y), !,
    assert(options_per_location(Current_location, Y)), retract(not_moved(Choosen_option, Y)), retract(options_per_location(X, Choosen_option)).
 
-handle_option(Choosen_option) :- openable(Choosen_option), current_location(Current_location), closed(Choosen_option, Y),
+handle_option(Choosen_option) :- openable(Choosen_option), current_location(Current_location), closed(Choosen_option, Y), !,
    assert(options_per_location(Current_location, Y)), retract(closed(Choosen_option, Y)), retract(options_per_location(X, Choosen_option)).
 
 handle_option(Choosen_option) :- locations(Choosen_option), locked_room(Choosen_option), not(have_key(Choosen_option)), !,
-   nl, write('That door is locked!'), nl, write('You need the right key.'), nl.
+   nl, ansi_format([bold,fg(red)], 'That door is ~w', [locked]), nl, ansi_format([bold,fg(red)], 'You need the right ~w', [key]), nl.
 
 handle_option(Choosen_option) :- objects(Choosen_option), current_location(X), options_per_location(X, Choosen_option), !,
    retract(options_per_location(X, Choosen_option)), assert(bag(Choosen_option)), print_object_taken_message(Choosen_option).
@@ -72,10 +84,10 @@ print_bag :- bag(X), !, nl, write('The currents items on your bag are: '), print
 print_bag :- not(bag(X)), print_empty_bag.
 print_bag.
 
-print_item_bag :- nl, bag(Item), tab(4), write('* '), write(Item), nl, fail.
+print_item_bag :- nl, bag(Item), tab(4), write('* '), ansi_format([bold,fg(white)], '~w', [Item]), nl, fail.
 print_item_bag.
 
-print_empty_bag :- nl, write('Your bag is currently empty.'), nl.
+print_empty_bag :- nl, ansi_format([bold,fg(white)], 'Your bag is currently ~w', [empty]), nl.
 
 have_key(Location) :- bag(X), X opens Location, !, retract(bag(X)), retract(locked_room(Location)).
 
@@ -84,3 +96,5 @@ reset_game(yes) :- retractall(bag(Items)), retractall(options_per_location(Locat
 
 reset_game(no) :- retractall(bag(Items)), retractall(options_per_location(Locations,Options)), retractall(current_location(Current)),
    retractall(locked_room(Locked)), write('Thanks for playing'), nl, write('Good Bye!').
+
+cls :- write('\e[2J').

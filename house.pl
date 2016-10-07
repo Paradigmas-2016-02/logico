@@ -47,10 +47,10 @@ options_per_location(red_room, hall).
 options_per_location(red_room, writing_desk).
 options_per_location(red_room, bed).
 options_per_location(red_room, wardrobe).
-	
+
 % Yellow Room Options
 options_per_location(yellow_room, hall).
-options_per_location(red_room, linen).
+options_per_location(yellow_room, linen).
 options_per_location(yellow_room, jewelry_box).
 options_per_location(yellow_room, dump).
 
