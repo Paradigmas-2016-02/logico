@@ -19,7 +19,11 @@
 
 start :- cls, write('Welcome to '), ansi_format([bold,fg(magenta)], 'No Wa~w', [y]), write(': The Game!'), nl,
    ansi_format([bold,fg(red)], 'Escape if you ca~w', [n]), nl,
-   consult(house),
+	 write('Would you like to play '), nl,
+	 tab(4), write('Play => '), ansi_format([bold,fg(white)], '~w', [tutorial]), nl,
+	 tab(4), write('Play => '), ansi_format([bold,fg(white)], '~w', [house]), nl,
+	 read(Level),
+	 consult(Level),
    play.
 
 play :- nl, not(current_location(exit)),
