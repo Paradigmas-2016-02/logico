@@ -1,3 +1,9 @@
+:-dynamic options_per_location/2.
+:-dynamic bag/1.
+:-dynamic current_location/1.
+:-dynamic locked_room/1.
+
+
 % start location %
 
 current_location(living_room).
@@ -65,3 +71,10 @@ locked_room(bathroom).
 locked_room(room_01).
 locked_room(room_02).
 locked_room(exit).
+
+:-op(500, xfx, opens).
+
+brown_key opens bathroom.
+red_key opens room_01.
+yellow_key opens room_02.
+main_key opens exit.
