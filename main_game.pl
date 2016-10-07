@@ -20,10 +20,9 @@
 start :- cls, write('Welcome to '), ansi_format([bold,fg(magenta)], 'No Wa~w', [y]), write(': The Game!'), nl,
    ansi_format([bold,fg(red)], 'Escape if you ca~w', [n]), nl,
    consult(house),
-	 sleep(3),
    play.
 
-play :- cls, nl, not(current_location(exit)),
+play :- nl, not(current_location(exit)),
    print_bag, nl,
    write('You are currently in the '),
    current_location(Current_location),
@@ -31,6 +30,7 @@ play :- cls, nl, not(current_location(exit)),
 	 write('and you can: '), nl,
    print_options, nl,
    read(Choosen_option),
+	 cls,
    handle_option(Choosen_option),
    play.
 
@@ -40,7 +40,7 @@ play :- current_location(exit), nl, write('You have exit the house!'), nl, write
    reset_game(Play_again).
 
 print_options :- current_location(Current_location), options_per_location(Current_location, Option), locations(Option),
-   tab(4), write('Go to => '), ansi_format([bold,fg(yellow)], '~w', [Option]), nl, fail. % Como melhorar essa parte? %
+   tab(4), write('Go to => '), ansi_format([bold,fg(yellow)], '~w', [Option]), nl, fail.
 
 print_options :- current_location(Current_location), options_per_location(Current_location, Option), objects(Option),
    tab(4), write('Grab => '), ansi_format([bold,fg(blue)], '~w', [Option]), nl, fail.
@@ -57,12 +57,12 @@ handle_option(Choosen_option) :- locations(Choosen_option), not(locked_room(Choo
    retract(current_location(X)), assert(current_location(Choosen_option)).
 
 handle_option(Choosen_option) :- locations(Choosen_option), locked_room(Choosen_option), have_key(Choosen_option), !,
-   nl, ansi_format([bold,fg(red)], 'You opened the door to ~w', [Choosen_option]), write('!'), nl.
+   nl, ansi_format([bold,fg(red)], 'You opened the door to ~w', [Choosen_option]), write('!'), nl, handle_option(Choosen_option).
 
-handle_option(Choosen_option) :- movable(Choosen_option), current_location(Current_location), not_moved(Choosen_option, Y),
+handle_option(Choosen_option) :- movable(Choosen_option), current_location(Current_location), not_moved(Choosen_option, Y), !,
    assert(options_per_location(Current_location, Y)), retract(not_moved(Choosen_option, Y)), retract(options_per_location(X, Choosen_option)).
 
-handle_option(Choosen_option) :- openable(Choosen_option), current_location(Current_location), closed(Choosen_option, Y),
+handle_option(Choosen_option) :- openable(Choosen_option), current_location(Current_location), closed(Choosen_option, Y), !,
    assert(options_per_location(Current_location, Y)), retract(closed(Choosen_option, Y)), retract(options_per_location(X, Choosen_option)).
 
 handle_option(Choosen_option) :- locations(Choosen_option), locked_room(Choosen_option), not(have_key(Choosen_option)), !,
