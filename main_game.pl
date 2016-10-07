@@ -2,6 +2,8 @@
 :-dynamic bag/1.
 :-dynamic current_location/1.
 :-dynamic locked_room/1.
+:-dynamic not_moved/2.
+:-dynamic closed/2.
 
 :-op(500, xfx, opens).
 
@@ -29,6 +31,12 @@ print_options :- current_location(Current_location), options_per_location(Curren
 
 print_options :- current_location(Current_location), options_per_location(Current_location, Option), objects(Option),
    tab(4), write('Grab => '), write(Option), nl, fail.
+
+print_options :- current_location(Current_location), options_per_location(Current_location, Option), movable(Option),
+   tab(4), write('Move => '), write(Option), nl, fail.
+
+print_options :- current_location(Current_location), options_per_location(Current_location, Option), openable(Option),
+   tab(4), write('Open => '), write(Option), nl, fail.
 print_options :- tab(4), write('See itens on bag => bag').
 
 print_options.
@@ -38,6 +46,12 @@ handle_option(Choosen_option) :- locations(Choosen_option), not(locked_room(Choo
 
 handle_option(Choosen_option) :- locations(Choosen_option), locked_room(Choosen_option), have_key(Choosen_option), !,
    nl, write('You opened the door to '), write(Choosen_option), write('!'), nl.
+
+handle_option(Choosen_option) :- movable(Choosen_option), current_location(Current_location), not_moved(Choosen_option, Y),
+   assert(options_per_location(Current_location, Y)), retract(not_moved(Choosen_option, Y)), retract(options_per_location(X, Choosen_option)).
+
+handle_option(Choosen_option) :- openable(Choosen_option), current_location(Current_location), closed(Choosen_option, Y),
+   assert(options_per_location(Current_location, Y)), retract(closed(Choosen_option, Y)), retract(options_per_location(X, Choosen_option)).
 
 handle_option(Choosen_option) :- locations(Choosen_option), locked_room(Choosen_option), not(have_key(Choosen_option)), !,
    nl, write('That door is locked!'), nl, write('You need the right key.'), nl.
