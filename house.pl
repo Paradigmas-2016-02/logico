@@ -14,6 +14,8 @@ current_location(living_room).
 options_per_location(living_room, flashlight).
 options_per_location(living_room, dinner_room).
 options_per_location(living_room, bathroom).
+options_per_location(living_room, desk).
+options_per_location(living_room, box).
 options_per_location(living_room, exit).
 
 % Dinner Room options
@@ -50,6 +52,11 @@ options_per_location(room_02, brown_key).
 options_per_location(bathroom, living_room).
 options_per_location(bathroom, main_key).
 
+% Hide
+not_moved(desk, towel).
+
+closed(box, toy).
+
 locations(living_room).
 locations(bathroom).
 locations(dinner_room).
@@ -66,11 +73,17 @@ objects(yellow_key).
 objects(brown_key).
 objects(main_key).
 objects(knife).
+objects(towel).
+objects(toy).
 
 locked_room(bathroom).
 locked_room(room_01).
 locked_room(room_02).
 locked_room(exit).
+
+movable(desk).
+
+openable(box).
 
 :-op(500, xfx, opens).
 
