@@ -66,7 +66,7 @@ handle_option(Choosen_option) :- openable(Choosen_option), current_location(Curr
    assert(options_per_location(Current_location, Y)), retract(closed(Choosen_option, Y)), retract(options_per_location(X, Choosen_option)).
 
 handle_option(Choosen_option) :- locations(Choosen_option), locked_room(Choosen_option), not(have_key(Choosen_option)), !,
-   nl,  ansi_format([bold,fg(red)], 'That door is ~w', [locked!]), nl, ansi_format([bold,fg(red)], 'You need the right ~w', [key]), nl.
+   nl, ansi_format([bold,fg(red)], 'That door is ~w', [locked]), nl, ansi_format([bold,fg(red)], 'You need the right ~w', [key]), nl.
 
 handle_option(Choosen_option) :- objects(Choosen_option), current_location(X), options_per_location(X, Choosen_option), !,
    retract(options_per_location(X, Choosen_option)), assert(bag(Choosen_option)), print_object_taken_message(Choosen_option).
