@@ -2,36 +2,11 @@
 :-dynamic options_per_location/2.
 :-dynamic bag/1.
 :-dynamic current_location/1.
-
-% Initial database listed here %
-% Theses values are referent to the location the player start and the current options to choose %
-
-% location ( location name )
-% options_per_location ( location name, option name )
-
-current_location(living_room).
-
-% Living Room options
-options_per_location(living_room, flashlight).
-options_per_location(living_room, kitchen).
-
-% Kitchen Options
-options_per_location(kitchen, living_room).
-options_per_location(kitchen, dinner_room).
-options_per_location(kitchen, knife).
-options_per_location(kitchen, key1).
-
-locations(kitchen).
-locations(dinner_room).
-locations(living_room).
-
-objects(flashlight).
-objects(key1).
-objects(key2).
-objects(knife).
+:-dynamic locked_room/1.
 
 start :- write('Welcome to <game_name>'), nl,
    write("it's an alpha version, so it's still not complete"), nl,
+   consult(house), 
    play.
 
 play :- nl, write('You are currently in the '),
