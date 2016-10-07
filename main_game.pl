@@ -57,7 +57,7 @@ handle_option(Choosen_option) :- locations(Choosen_option), not(locked_room(Choo
    retract(current_location(X)), assert(current_location(Choosen_option)).
 
 handle_option(Choosen_option) :- locations(Choosen_option), locked_room(Choosen_option), have_key(Choosen_option), !,
-   nl, ansi_format([bold,fg(red)], 'You opened the door to ~w', [Choosen_option]), write('!'), nl, handle_option(Choosen_option).
+   nl, ansi_format([bold,fg(green)], 'You opened the door to ~w', [Choosen_option]), write('!'), nl, handle_option(Choosen_option).
 
 handle_option(Choosen_option) :- movable(Choosen_option), current_location(Current_location), not_moved(Choosen_option, Y), !,
    assert(options_per_location(Current_location, Y)), retract(not_moved(Choosen_option, Y)), retract(options_per_location(X, Choosen_option)).
@@ -78,7 +78,7 @@ handle_option(bag) :- print_bag.
 handle_option(Choosen_option) :- nl, write(Choosen_option), write(' is not an option.'), nl, write('please choose a valid option on the menu'), nl,
    write("To choose an option you must write the name after the '=>' symbol"), nl, nl, play.
 
-print_object_taken_message(Object_taken) :- nl, write(' You now have: '), write(Object_taken), nl, nl.
+print_object_taken_message(Object_taken) :- nl, ansi_format([bold,fg(green)], 'You now have: ~w', [Object_taken]), nl, nl.
 
 print_bag :- bag(X), !, nl, write('The currents items on your bag are: '), print_item_bag.
 print_bag :- not(bag(X)), print_empty_bag.
